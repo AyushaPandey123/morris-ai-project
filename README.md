@@ -1,68 +1,70 @@
 # Morris AI Project
 
-This is our CS4346 project for the Morris Game, Variant. We are building the AI in Python and using this repo to keep our work together.
+CS4346: Introduction to Artificial Intelligence
 
-Right now we have the starter files. We still need to implement the functions and test everything.
+A Python project for the Morris Game, Variant, covering move generation, MINIMAX, ALPHA-BETA pruning, static evaluation, and tournament play.
 
-## How we divided the work
+## Team Contributions
 
-| Who | Work |
+We divided the project into move generation, search, and joint integration work.
+
+| Team member | Assigned components |
 | --- | --- |
-| Me (Ayusha) | All the Generate functions in moves.py, plus neighbors, closeMill, and color swapping |
-| Sajja | MINIMAX and ALPHA-BETA in search.py, the original evaluation functions in evaluation.py, and the programs that run them |
-| Both of us | Playing as Black, improving the evaluation, combining our code, testing, and preparing the tournament agent |
+| Ayusha Pandey | All Generate functions, neighbors, closeMill, and color swapping in moves.py |
+| Sajja | MINIMAX and ALPHA-BETA in search.py, original evaluation in evaluation.py, and command-line programs |
+| Both members | Black-player support, improved evaluation, integration, examples, testing, and tournament preparation |
 
-This is how we split the work between us. The assignment has five parts, and we need to finish all of them.
+## Collaboration
 
-## Working together
+We worked on separate branches for our respective components and used the shared repository to coordinate our work. Small commits and pull requests were used to combine changes in main. Changes affecting both components were reviewed together.
 
-I will invite Sajja to this private repo through Settings > Collaborators > Add people. Once she accepts the invitation, we can both work here.
+## Current Status
 
-We will use separate branches for our work, like ayusha-moves and sajja-search. After finishing a small section, we will commit it and open a pull request to add it to main. Before starting more work, we will pull the latest changes. If we need to change something in each other's files, we will talk about it first.
+Starter interfaces have been added in moves.py, search.py, and evaluation.py. Algorithm implementation and testing are still pending.
 
-## How our files connect
+## Board Representation
 
-Our board will be a string with 23 characters:
+Board positions use 23-character strings, with indices matching the Morris Variant handout.
 
-- W = White piece
-- B = Black piece
-- x = empty spot
+| Character | Meaning |
+| --- | --- |
+| W | White piece |
+| B | Black piece |
+| x | Empty location |
 
-We will follow the position numbers in the Morris handout. The Generate functions will return a list of possible new boards and leave the original board unchanged.
+Opening moves place nine pieces per player. Midgame moves use adjacent empty locations. A player with exactly three pieces can hop to any empty location. Placement turns are tracked separately from remaining piece counts after captures.
 
-GenerateRemove(board, positions) will add the boards after removing eligible Black pieces to the positions list. neighbors(location) will give us the connected spots, and closeMill(location, board) will tell us whether that spot is part of a mill. For Black's moves, we will swap the colors, use White's move generator, and swap them back.
+## Module Interfaces
 
-The search will return the best next board, its estimate, and how many positions were evaluated. For the original White programs, a higher score means better for White. Each level of the search switches whose turn it is. We will use the same move order and choose the first best move when scores tie, so MINIMAX and ALPHA-BETA give the same result.
+Move generators return lists of new board strings without changing the input. GenerateRemove(board, positions) appends capture results. neighbors(location) returns adjacent indices, and closeMill(location, board) checks for a completed mill. Black moves reuse White generation through color swapping.
 
-We also need to count placement turns separately. A piece being captured does not mean that player gets another opening placement.
+Search returns the selected immediate successor, estimate, and static evaluation count. Original evaluation uses White's perspective. Search alternates players and uses consistent move ordering and first-best tie breaking.
 
-## Files we need to submit
+## Required Programs
 
-- MiniMaxOpening.py
-- MiniMaxGame.py
-- ABOpening.py
-- ABGame.py
-- MiniMaxOpeningBlack.py
-- MiniMaxGameBlack.py
-- MiniMaxOpeningImproved.py
-- MiniMaxGameImproved.py
-- Examples.txt
-- MyStaticEstimation.txt
-- TournamentAgent.py, if we make a separate tournament program
+| File | Purpose |
+| --- | --- |
+| MiniMaxOpening.py | White opening MINIMAX |
+| MiniMaxGame.py | White midgame/endgame MINIMAX |
+| ABOpening.py | Opening ALPHA-BETA |
+| ABGame.py | Midgame/endgame ALPHA-BETA |
+| MiniMaxOpeningBlack.py | Black opening MINIMAX |
+| MiniMaxGameBlack.py | Black midgame/endgame MINIMAX |
+| MiniMaxOpeningImproved.py | Opening with improved evaluation |
+| MiniMaxGameImproved.py | Midgame/endgame with improved evaluation |
+| TournamentAgent.py | Optional separate tournament agent |
 
-Examples.txt needs at least two examples where ALPHA-BETA evaluates fewer positions than MINIMAX.
+These programs remain to be implemented.
 
-In MyStaticEstimation.txt, we need to explain what our improved evaluation checks, why we chose those features, and how we combine them. We also need at least two board positions where it chooses a different move from the original evaluation, with an explanation of why we prefer that move.
+## Usage
 
-We will submit one ZIP and include any helper files that our programs import, so everything runs after extracting it.
-
-Example command:
+Required command format:
 
 ~~~sh
 python MiniMaxOpening.py board1.txt board2.txt 2
 ~~~
 
-The program reads board1.txt, searches to depth 2, and writes the chosen board to board2.txt. It also needs to print:
+Arguments specify the input board file, output board file, and search depth. The selected board is written to the output file. Required console output:
 
 ~~~text
 Board Position: ...
@@ -70,37 +72,35 @@ Positions evaluated by static estimation: ...
 MINIMAX estimate: ...
 ~~~
 
-## Our plan
+## Testing Requirements
 
-1. I will start with neighbors and closeMill, then do GenerateAdd and GenerateRemove, followed by moving and hopping.
-2. Sajja will work on the original evaluation functions and MINIMAX.
-3. We will connect our code and get the opening program working first.
-4. Then we will finish ALPHA-BETA, Black support, and the improved evaluation.
-5. Finally, we will test full games and prepare our ZIP.
+- Verify neighbors and mills against the variant board.
+- Check placement, adjacent movement, hopping at exactly three pieces, and captures.
+- Follow the handout's unchanged-board case when all opponent pieces are in mills.
+- Verify both colors and confirm that swapping colors twice restores the board.
+- Compare MINIMAX and ALPHA-BETA at equal depth with identical tie breaking.
+- Count actual static evaluation calls and handle terminal game positions.
+- Compare improved evaluation features using practice games.
+- Test full games and search time before tournament use.
 
-## Things we need to test
+## Documentation
 
-We want a strong agent for the competition, so we need to check more than whether the code runs.
+Examples.txt must include at least two cases where ALPHA-BETA evaluates fewer positions than MINIMAX.
 
-- Our neighbors and mills match the variant board in the handout.
-- Placing, moving, hopping, and capturing all produce legal boards.
-- Hopping happens only when the player has exactly three pieces.
-- If all opponent pieces are in mills, we follow the handout's rule and leave the board unchanged instead of removing a piece.
-- Swapping colors twice gives us the original board.
-- MINIMAX and ALPHA-BETA choose the same move and estimate at the same depth.
-- We handle a player having only two pieces or no legal moves during the game phase.
-- We test our improved evaluation in practice games before deciding which features to keep.
-- Our agent works for both White and Black.
-- We finish the search early enough to post within the four-minute limit.
+MyStaticEstimation.txt must explain the improved evaluation's features, rationale, and combination. It must include at least two board positions where the improved evaluation selects a different move, with an explanation of the preferred move.
 
-Once the basic search works, we can try better move ordering and increasing the search depth gradually with ALPHA-BETA. We need to keep the best move from the last completed search in case time runs out, and stay within the algorithms allowed in class.
+## Tournament
 
-During games, we will keep track of the turn, move number, the 18 opening placements, and repeated positions. The same board with the same player to move three times is a draw. We will also check that the other team's move is legal.
+The agent must support both colors and all game phases, use the class MINIMAX or ALPHA-BETA algorithms, and respond within four minutes. Move ordering and iterative deepening with ALPHA-BETA are potential improvements, subject to course requirements.
 
-## Deadlines
+Game records include the move number, player, and board position. Three repetitions of the same board with the same player to move result in a draw. Teams chat serves as the official record, with one designated communicator per team per game.
 
-- Project submission: October 8, 2026
-- Schedule official matches by: October 8, 2026
-- Finish official tournament games by: October 15, 2026
+## Submission and Deadlines
 
-We will use the Teams chat as the official game record and choose one person to post our moves for each game.
+Submit one ZIP containing all required programs, Examples.txt, MyStaticEstimation.txt, and imported helper modules. Include TournamentAgent.py if a separate tournament program is used.
+
+| Deadline | Date |
+| --- | --- |
+| Final project submission | October 8, 2026 |
+| Official match scheduling | October 8, 2026 |
+| Official tournament completion | October 15, 2026 |
