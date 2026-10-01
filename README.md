@@ -10,7 +10,7 @@ These are our team work groups; the assignment itself has Parts I-V.
 | Owner | Files and responsibilities |
 | --- | --- |
 | Ayusha | moves.py: GenerateMovesOpening, GenerateMovesMidgameEndgame, GenerateAdd, GenerateMove, GenerateHopping, GenerateRemove, neighbors, closeMill, and color swapping |
-| Teammate | search.py and evaluation.py: MINIMAX, ALPHA-BETA, original static estimators, and command-line programs |
+| Sajja | search.py and evaluation.py: MINIMAX, ALPHA-BETA, original static estimators, and command-line programs |
 | Together | Black support, improved evaluation, integration, examples, tournament agent, and practice matches |
 
 ## Collaborating
