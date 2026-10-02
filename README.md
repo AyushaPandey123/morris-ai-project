@@ -20,7 +20,9 @@ We worked on separate branches for our respective components and used the shared
 
 ## Current Status
 
-Starter interfaces have been added in moves.py, search.py, and evaluation.py. Algorithm implementation and testing are still pending.
+Move generation in moves.py has been implemented for both colors, including neighbors, mills, placement, movement, hopping, and captures. Seven unit tests passed, including checks on 150 generated boards. Search, evaluation, command-line programs, and tournament integration remain pending.
+
+Run tests with python -m unittest test_moves -v from the repository folder. Search can import generate_moves(board, phase, player), with phase opening or game and player W or B. Search handles terminal positions before expansion.
 
 ## Board Representation
 
