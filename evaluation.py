@@ -54,4 +54,18 @@ def improved_opening(board: str) -> int:
 
 
 def improved_game(board: str) -> int:
-    raise NotImplementedError("improved game estimate")
+    done = piece_terminal(board)
+    if done is not None:
+        return done
+
+    black, white = mobility(board, "B"), mobility(board, "W")
+
+    if black == 0:
+        return 10000
+
+    return (
+        1000 * (count(board, "W") - count(board, "B"))
+        + 150 * (mills(board, "W") - mills(board, "B"))
+        + 60 * (threats(board, "W") - threats(board, "B"))
+        + 20 * (white - black)
+    )
