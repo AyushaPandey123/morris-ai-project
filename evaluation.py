@@ -1,4 +1,4 @@
-from moves import generate_moves
+from moves import MILLS, generate_moves
 
 
 def count(board: str, color: str) -> int:
@@ -34,8 +34,23 @@ def static_game(board: str) -> int:
     return 1000 * (count(board, "W") - count(board, "B")) - moves
 
 
+def mills(board: str, color: str) -> int:
+    return sum(all(board[i] == color for i in line) for line in MILLS)
+
+
+def threats(board: str, color: str) -> int:
+    return sum(
+        sorted(board[i] for i in line) == sorted(color * 2 + "x")
+        for line in MILLS
+    )
+
+
 def improved_opening(board: str) -> int:
-    raise NotImplementedError("improved opening estimate")
+    return (
+        10 * (count(board, "W") - count(board, "B"))
+        + 100 * (mills(board, "W") - mills(board, "B"))
+        + 40 * (threats(board, "W") - threats(board, "B"))
+    )
 
 
 def improved_game(board: str) -> int:
