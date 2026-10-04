@@ -9,20 +9,29 @@ def static_opening(board: str) -> int:
     return count(board, "W") - count(board, "B")
 
 
-def black_moves(board: str) -> int:
-    return len(generate_moves(board, "game", "B"))
+def mobility(board: str, color: str) -> int:
+    return len(generate_moves(board, "game", color))
+
+
+def piece_terminal(board: str):
+    if count(board, "B") <= 2:
+        return 10000
+    if count(board, "W") <= 2:
+        return -10000
+    return None
 
 
 def static_game(board: str) -> int:
-    white, black = count(board, "W"), count(board, "B")
-    if black <= 2:
-        return 10000
-    if white <= 2:
-        return -10000
-    moves = black_moves(board)
+    done = piece_terminal(board)
+    if done is not None:
+        return done
+
+    moves = mobility(board, "B")
+
     if moves == 0:
         return 10000
-    return 1000 * (white - black) - moves
+
+    return 1000 * (count(board, "W") - count(board, "B")) - moves
 
 
 def improved_opening(board: str) -> int:
