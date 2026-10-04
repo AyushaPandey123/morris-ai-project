@@ -29,3 +29,24 @@ def stuck_score(player: str) -> int:
  
 def better(player: str, new: int, best: int) -> bool:
     return new > best if player == "W" else new < best
+
+def _minimax(board, depth, phase, player, evaluator, count):
+    if is_leaf(board, depth, phase):
+        count[0] += 1
+        return evaluator(board), board
+    children = generate_moves(board, phase, player)
+    if not children:
+        return stuck_score(player), board
+    best_score, best_child = None, None
+    for child in children:
+        score, _ = _minimax(child, depth - 1, phase, other(player), evaluator, count)
+        if best_child is None or better(player, score, best_score):
+            best_score, best_child = score, child
+    return best_score, best_child
+
+
+def minimax(board: str, depth: int, phase: str, player: str,
+            evaluator: Callable[[str], int]) -> SearchResult:
+    count = [0]
+    score, child = _minimax(board, depth, phase, player, evaluator, count)
+    return SearchResult(child, score, count[0])
