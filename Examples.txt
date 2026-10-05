@@ -1,0 +1,46 @@
+Examples.txt: ALPHA-BETA evaluates fewer positions than MINIMAX
+Same board, same depth, same estimate, same chosen move; only the work differs.
+ 
+Example 1: opening phase, depth 3
+Input board: WxxxxBxxxxxxxxxxxxxxxxx
+$ python MiniMaxOpening.py in.txt out.txt 3
+Board Position: WWxxxBxxxxxxxxxxxxxxxxx
+Positions evaluated by static estimation: 8094
+MINIMAX estimate: 1
+$ python ABOpening.py in.txt out.txt 3
+Board Position: WWxxxBxxxxxxxxxxxxxxxxx
+Positions evaluated by static estimation: 808
+MINIMAX estimate: 1
+ 
+Example 2: opening phase, depth 2
+Input board: WxxxxWxxWxBxxxxxxBxxxBx
+$ python MiniMaxOpening.py in.txt out.txt 2
+Board Position: WxxxxWxxWxxxxxxxxBxxWBx
+Positions evaluated by static estimation: 307
+MINIMAX estimate: 1
+$ python ABOpening.py in.txt out.txt 2
+Board Position: WxxxxWxxWxxxxxxxxBxxWBx
+Positions evaluated by static estimation: 50
+MINIMAX estimate: 1
+ 
+Example 3: game phase, depth 3
+Input board: WWWxxxxxBBBxxxxxxxxxxxx
+$ python MiniMaxGame.py in.txt out.txt 3
+Board Position: xWWxxWxxBBBxxxxxxxxxxxx
+Positions evaluated by static estimation: 138767
+MINIMAX estimate: 10000
+$ python ABGame.py in.txt out.txt 3
+Board Position: xWWxxWxxBBBxxxxxxxxxxxx
+Positions evaluated by static estimation: 3465
+MINIMAX estimate: 10000
+
+Example 4: game phase, depth 3
+Input board: xWxxxxBxxWWWWBBxxxxBBxx
+$ python MiniMaxGame.py in.txt out.txt 3
+Board Position: WxxxxxBxxWWWWBBxxxxBBxx
+Positions evaluated by static estimation: 1079
+MINIMAX estimate: -9
+$ python ABGame.py in.txt out.txt 3
+Board Position: WxxxxxBxxWWWWBBxxxxBBxx
+Positions evaluated by static estimation: 134
+MINIMAX estimate: -9

@@ -1,0 +1,47 @@
+MyStaticEstimation.txt: improved static estimation (evaluation.py)
+ 
+1. Features (all scored from White's point of view, White minus Black)
+   - Piece difference: the handout's main idea. Pieces win the game.
+   - Mills: completed three-in-a-row lines. Mill pieces cannot be captured.
+   - Threats: lines with two own pieces and one empty spot (a mill next move).
+   - Mobility (midgame/endgame): number of legal moves for each side.
+ 
+2. Why these features
+   - The opening estimate only sees piece difference, so most placements tie at
+     0 and search picks the first empty spot (a0). Mills and threats tell
+     search which placements actually build something.
+   - The handout midgame estimate only counts Black's moves. Counting both sides
+     rewards keeping White free as well as boxing Black in.
+   - Blocked players lose, so mobility is the cheapest warning of that.
+ 
+3. How they are combined (weighted sum, weights ordered by importance)
+   improved_opening = 10*pieces + 100*mills + 40*threats
+   improved_game    = 1000*pieces + 150*mills + 60*threats + 20*mobility
+   Terminal positions are unchanged: Black <= 2 pieces or Black blocked = +10000,
+   White <= 2 pieces = -10000. In the midgame one piece is worth more than any
+   combination of the other features, as in the handout.
+ 
+4. Why it should be better
+   It keeps the handout's winning logic and adds positional knowledge, so
+   it can separate moves the original scores as equal. It costs one extra
+   mobility call per leaf, which is acceptable at tournament depths.
+ 
+Positions where the improved evaluation picks a different move
+(White to move, opening, depth 2 for both evaluators; run with
+MiniMaxOpening.py and MiniMaxOpeningImproved.py)
+ 
+Position A: xxxxxWxxxxxxxxxBxxWxxBx   (W on 5 and 18, B on 15 and 21)
+   Original: WxxxxWxxxxxxxxxBxxWxxBx  estimate 0   (places at a0)
+   Improved: xxxxxWxxxxxxxxxBxxWWxBx  estimate 40  (places at 19)
+   Why: every placement ties for the original, so it takes the first empty
+   spot, which builds nothing. Placing at 19 makes two threats at once:
+   5-12-19 needs 12 and 17-18-19 needs 17. Black can block only one, so White
+   keeps a threat after Black's reply (estimate +40).
+ 
+Position B: WxxxxxxxWxWBxxxxxxxBWBB   (W on 0, 8, 10, 20; B on 11, 19, 21, 22)
+   Original: WxxxxxxxWWWxxxxxxxxBWBB  estimate 1   (mill 8-9-10, removes B at 11)
+   Improved: WxxxxxxxWWWBxxxxxxxxWBB  estimate 130 (mill 8-9-10, removes B at 19)
+   Why: both play 9 and close the same mill, but differ on the capture.
+   The original takes the first removable piece (11). The improved one removes
+   19, which breaks Black's threat 19-22 on line 16-19-22 (Black has 0 threats
+   afterwards instead of 1) and keeps White's lead.
