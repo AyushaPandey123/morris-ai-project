@@ -2,31 +2,32 @@
 
 CS4346: Introduction to Artificial Intelligence
 
-A Python project for the Morris Game, Variant, covering move generation, MINIMAX, ALPHA-BETA pruning, static evaluation, and tournament play.
+A Python program that plays the Morris Game, Variant, a 23-spot cousin of Nine Men's Morris. It generates legal moves, searches with MINIMAX or ALPHA-BETA, scores positions with a static evaluation, and can play either color as a tournament agent.
 
 ## Team Contributions
 
-We divided the project into move generation, search, and joint integration work.
-
-| Team member | Assigned components |
+| Team member | Components |
 | --- | --- |
 | Ayusha Pandey | All Generate functions, neighbors, closeMill, and color swapping in moves.py |
 | Sajja | MINIMAX and ALPHA-BETA in search.py, original evaluation in evaluation.py, and command-line programs |
-| Both members | Black-player support, improved evaluation, integration, examples, testing, and tournament preparation |
+| Both members | Black-player support, improved evaluation, integration, examples, testing, and tournament agent |
 
-## Collaboration
+We worked on separate branches for our components, merged small commits into main, and reviewed shared changes together.
 
-We worked on separate branches for our respective components and used the shared repository to coordinate our work. Small commits and pull requests were used to combine changes in main. Changes affecting both components were reviewed together.
+## The Game
 
-## Current Status
+Two players, White and Black, each have 9 pieces. The goal is to reduce the opponent to 2 pieces or leave them with no legal move.
 
-Move generation in moves.py has been implemented for both colors, including neighbors, mills, placement, movement, hopping, and captures. Seven unit tests passed, including checks on 150 generated boards. Search, evaluation, command-line programs, and tournament integration remain pending.
+- **Opening:** players take turns placing pieces on empty spots.
+- **Midgame:** players move one piece to an adjacent empty spot.
+- **Endgame:** a player with exactly three pieces may hop to any empty spot.
+- **Mills:** three of your pieces on one line is a mill. Closing a mill removes one opponent piece that is not itself in a mill. If every opponent piece is in a mill, nothing is removed.
 
-Run tests with python -m unittest test_moves -v from the repository folder. Search can import generate_moves(board, phase, player), with phase opening or game and player W or B. Search handles terminal positions before expansion.
+The board has no d2 spot, so c2 and e2 are neighbors, d1 has three neighbors, and no mill crosses the center. There are 18 mill lines: seven horizontal, seven vertical, and four diagonal.
 
 ## Board Representation
 
-Board positions use 23-character strings, with indices matching the Morris Variant handout.
+A position is a 23-character string. Indices follow the Morris Variant handout (0 is a0, 1 is d0, 2 is g0, and so on up to 22 for g6).
 
 | Character | Meaning |
 | --- | --- |
@@ -34,75 +35,113 @@ Board positions use 23-character strings, with indices matching the Morris Varia
 | B | Black piece |
 | x | Empty location |
 
-Opening moves place nine pieces per player. Midgame moves use adjacent empty locations. A player with exactly three pieces can hop to any empty location. Placement turns are tracked separately from remaining piece counts after captures.
+## Setup
 
-## Module Interfaces
+Python 3.9 or newer, standard library only.
 
-Move generators return lists of new board strings without changing the input. GenerateRemove(board, positions) appends capture results. neighbors(location) returns adjacent indices, and closeMill(location, board) checks for a completed mill. Black moves reuse White generation through color swapping.
-
-Search returns the selected immediate successor, estimate, and static evaluation count. Original evaluation uses White's perspective. Search alternates players and uses consistent move ordering and first-best tie breaking.
-
-## Required Programs
-
-| File | Purpose |
-| --- | --- |
-| MiniMaxOpening.py | White opening MINIMAX |
-| MiniMaxGame.py | White midgame/endgame MINIMAX |
-| ABOpening.py | Opening ALPHA-BETA |
-| ABGame.py | Midgame/endgame ALPHA-BETA |
-| MiniMaxOpeningBlack.py | Black opening MINIMAX |
-| MiniMaxGameBlack.py | Black midgame/endgame MINIMAX |
-| MiniMaxOpeningImproved.py | Opening with improved evaluation |
-| MiniMaxGameImproved.py | Midgame/endgame with improved evaluation |
-| TournamentAgent.py | Optional separate tournament agent |
-
-These programs remain to be implemented.
+~~~sh
+git clone <repository-url>
+cd morris-ai-project
+~~~
 
 ## Usage
 
-Required command format:
+Each program takes an input board file, an output board file, and a search depth:
 
 ~~~sh
+echo WxxxxBxxxxxxxxxxxxxxxxx > board1.txt
 python MiniMaxOpening.py board1.txt board2.txt 2
 ~~~
 
-Arguments specify the input board file, output board file, and search depth. The selected board is written to the output file. Required console output:
+The input file holds one 23-character board. The chosen board is written to the output file, which is overwritten on each run. Console output:
 
 ~~~text
-Board Position: ...
-Positions evaluated by static estimation: ...
-MINIMAX estimate: ...
+Board Position: WWxxxBxxxxxxxxxxxxxxxxx
+Positions evaluated by static estimation: 420
+MINIMAX estimate: 0
 ~~~
 
-## Testing Requirements
-
-- Verify neighbors and mills against the variant board.
-- Check placement, adjacent movement, hopping at exactly three pieces, and captures.
-- Follow the handout's unchanged-board case when all opponent pieces are in mills.
-- Verify both colors and confirm that swapping colors twice restores the board.
-- Compare MINIMAX and ALPHA-BETA at equal depth with identical tie breaking.
-- Count actual static evaluation calls and handle terminal game positions.
-- Compare improved evaluation features using practice games.
-- Test full games and search time before tournament use.
-
-## Documentation
-
-Examples.txt must include at least two cases where ALPHA-BETA evaluates fewer positions than MINIMAX.
-
-MyStaticEstimation.txt must explain the improved evaluation's features, rationale, and combination. It must include at least two board positions where the improved evaluation selects a different move, with an explanation of the preferred move.
-
-## Tournament
-
-The agent must support both colors and all game phases, use the class MINIMAX or ALPHA-BETA algorithms, and respond within four minutes. Move ordering and iterative deepening with ALPHA-BETA are potential improvements, subject to course requirements.
-
-Game records include the move number, player, and board position. Three repetitions of the same board with the same player to move result in a draw. Teams chat serves as the official record, with one designated communicator per team per game.
-
-## Submission and Deadlines
-
-Submit one ZIP containing all required programs, Examples.txt, MyStaticEstimation.txt, and imported helper modules. Include TournamentAgent.py if a separate tournament program is used.
-
-| Deadline | Date |
+| Program | What it does |
 | --- | --- |
-| Final project submission | October 8, 2026 |
-| Official match scheduling | October 8, 2026 |
-| Official tournament completion | October 15, 2026 |
+| MiniMaxOpening.py | White, opening phase, MINIMAX |
+| MiniMaxGame.py | White, midgame/endgame, MINIMAX |
+| ABOpening.py | White, opening phase, ALPHA-BETA |
+| ABGame.py | White, midgame/endgame, ALPHA-BETA |
+| MiniMaxOpeningBlack.py | Black, opening phase, MINIMAX |
+| MiniMaxGameBlack.py | Black, midgame/endgame, MINIMAX |
+| MiniMaxOpeningImproved.py | White, opening phase, improved evaluation |
+| MiniMaxGameImproved.py | White, midgame/endgame, improved evaluation |
+| TournamentAgent.py | Full agent for either color and any phase |
+
+ALPHA-BETA returns the same board and estimate as MINIMAX with fewer evaluations. On the board above at depth 2, MiniMaxOpening.py evaluates 420 positions and ABOpening.py evaluates 40. More comparisons are in Examples.txt.
+
+## Tournament Agent
+
+TournamentAgent.py uses ALPHA-BETA with the improved evaluation and iterative deepening. It searches depth 1, 2, 3, and so on, keeps the last completed result, and stops when the next depth would not fit in its 120-second budget or when a win or loss is forced. During the opening it never searches past the last placement.
+
+~~~sh
+python TournamentAgent.py in.txt out.txt W 1
+~~~
+
+Arguments: input board file, output board file, the color to play (W or B), and the move number of the move being made. White plays odd move numbers and Black plays even ones. Moves 1 to 18 are placements, and later moves move pieces. The agent prints the line to post:
+
+~~~text
+Move 1 - White
+Wxxxxxxxxxxxxxxxxxxxxxx
+~~~
+
+The agent does not check the opponent's moves or detect repeated positions.
+
+### Practice helpers
+
+| Command | Purpose |
+| --- | --- |
+| python selfplay.py | Agent plays both colors and prints every move |
+| python practice.py B 20 | Play against the agent (agent is Black, 20 seconds per move) |
+| python check_move.py PREVIOUS_BOARD NEW_BOARD MOVE_NUMBER | Report whether a move is legal |
+
+## How It Works
+
+### Project layout
+
+| File | Responsibility |
+| --- | --- |
+| moves.py | Neighbors, mills, move generation, captures, color swapping |
+| evaluation.py | Static estimates, original and improved |
+| search.py | MINIMAX and ALPHA-BETA |
+| runner.py | Read and write board files, print results |
+| Program files | Combine an algorithm, phase, player, and evaluator |
+| TournamentAgent.py | Chooses a move within a time budget |
+
+### Move generation
+
+Generators return new boards without changing the input. When a move closes a mill, one board is generated for each removable opponent piece, and search picks among them. Black moves reuse White generation by swapping colors, generating, and swapping back.
+
+### Search
+
+Both algorithms share one interface:
+
+~~~python
+minimax(board, depth, phase, player, evaluator) -> SearchResult(board, estimate, positions_evaluated)
+alphabeta(board, depth, phase, player, evaluator) -> SearchResult(board, estimate, positions_evaluated)
+~~~
+
+- `phase` is "opening" or "game" and stays fixed during one search.
+- `player` is the side to move. White maximizes and Black minimizes.
+- Evaluators take a board and return an int scored from White's perspective.
+- Ties go to the first child with a strictly better value, so both algorithms choose the same move.
+- `positions_evaluated` counts actual evaluator calls.
+- A game-phase position where either side has 2 or fewer pieces is not expanded. A player with no legal move loses.
+
+### Static evaluation
+
+Original estimates:
+
+- Opening: white pieces minus black pieces.
+- Midgame/endgame: 10000 if Black has 2 or fewer pieces or no moves, -10000 if White has 2 or fewer pieces, otherwise 1000 times the piece difference minus Black's number of moves.
+
+Improved estimates (rationale and example positions in MyStaticEstimation.txt):
+
+- Opening: 10 * pieces + 100 * mills + 40 * threats.
+- Midgame/endgame: 1000 * pieces + 150 * mills + 60 * threats + 20 * mobility.
+- Every feature is White minus Black. A threat is a line with two own pieces and one empty spot. Terminal positions match the original estimate.
