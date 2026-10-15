@@ -10,7 +10,8 @@ A Python program that plays the Morris Game, Variant, a 23-spot cousin of Nine M
 | --- | --- |
 | Ayusha Pandey | All Generate functions, neighbors, closeMill, and color swapping in moves.py |
 | Sajja Regmi| MINIMAX and ALPHA-BETA in search.py, original evaluation in evaluation.py, and command-line programs |
-| Both members | Black-player support, improved evaluation, integration, examples, testing, and tournament agent |
+| Destiny Vasquez | Tournament coordination, scheduling matches and running tournament games |
+| All members | Black-player support, improved evaluation, integration, examples, testing, and tournament agent |
 
 We worked on separate branches for our components, merged small commits into main, and reviewed shared changes together.
 
